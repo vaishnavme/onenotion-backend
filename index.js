@@ -7,10 +7,14 @@ app.use(cors());
 app.use(express.json());
 const { dbConnection } = require("./db/db.connect");
 
+const userRoute = require("./routes/user.route");
+
 const errorHandler = require("./middleware/errorHandler");
 const routeHandler = require("./middleware/routeHandler");
 
 dbConnection();
+
+app.use("/user", userRoute);
 
 app.get("/", (req, res) => {
     res.send("One Notion Live...")
