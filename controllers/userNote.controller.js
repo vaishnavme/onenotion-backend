@@ -1,5 +1,6 @@
 const{ UserNote } = require("../models/usernotes.model");
 const { extend } = require("lodash");
+const { User } = require("../models/user.model");
 
 const getUserNotes = async(req, res) => {
     try {
@@ -56,6 +57,57 @@ const saveUserNote = async(req, res) => {
     }
 }
 
+const getNoteById = async(req, res) => {
+    const { user } = req;
+    const { noteId } = req.params;
+    try {
+        const userNotes = await UserNote.findOne({owner: user.userId});
+
+        if(userNotes) {
+            const noteRequested = userNotes.notes.find((noteItem) => noteItem._id == noteId);
+
+            res.json({
+                success: true,
+                noteRequested
+            })
+        }
+    } 
+    catch(err) {
+        res.status(503).json({
+            success:false, 
+            message: `ERROR ${err}`
+        })
+    }
+}
+
+const updateNoteById = async(req, res) => {
+    const { user } = req;
+    const { noteId } = req.params;
+    const { note } = req.body;
+    try {
+        const userNotes = await UserNote.findOne({owner: user.userId});
+
+        const updatedNotesArr = userNotes.notes.filter((noteItem) => noteItem._id != noteId);
+        userNotes.notes = updatedNotesArr;
+        
+        await userNotes.save();
+        const addNewNote = extend(userNotes, {
+            notes: [...userNotes.notes, { _id: noteId,...note}]
+        })
+        const newResponse = await addNewNote.save();
+        res.json({
+            success: true,
+            newResponse
+        })
+    } 
+    catch(err) {
+        res.status(503).json({
+            success:false, 
+            message: `cannot update note ERROR ${err}`
+        })
+    }
+}
+
 const deleteNote = async(req, res) => {
     const { user } = req;
     const { noteId } = req.params;
@@ -76,7 +128,7 @@ const deleteNote = async(req, res) => {
     catch(err) {
         res.status(503).json({
             success:false, 
-            message: `cannot remove from cart ERROR ${err}`
+            message: `cannot delete note ERROR ${err}`
         })
     }
 }
@@ -84,5 +136,7 @@ const deleteNote = async(req, res) => {
 module.exports = {
     getUserNotes,
     saveUserNote,
+    getNoteById,
+    updateNoteById,
     deleteNote
 }

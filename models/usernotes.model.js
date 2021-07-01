@@ -13,7 +13,7 @@ const noteSchema = new Schema({
         type: String, 
         default: "General"
     },
-    isBookmarked: { 
+    isBookmark: { 
         type: Boolean 
     },
     article: { 
