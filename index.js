@@ -9,6 +9,7 @@ const { dbConnection } = require("./db/db.connect");
 
 const userRoute = require("./routes/user.route");
 const userPages = require("./routes/page.route");
+const publicPages = require("./routes/public.route");
 
 const errorHandler = require("./middleware/errorHandler");
 const routeHandler = require("./middleware/routeHandler");
@@ -17,6 +18,7 @@ dbConnection();
 
 app.use("/user", userRoute);
 app.use("/pages", userPages);
+app.use("/public", publicPages);
 
 app.get("/", (req, res) => {
     res.send("One Notion Live...")

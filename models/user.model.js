@@ -20,10 +20,6 @@ const userSchema = new Schema({
     pages: [{
         type: Schema.Types.ObjectId,
         ref: "Page"
-    }],
-    publicPages: [{
-        type: Schema.Types.ObjectId,
-        ref: "Page"
     }]
 })
 

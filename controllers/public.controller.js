@@ -1,38 +1,102 @@
 const { Page } = require("../models/page.model");
+const { User } = require("../models/user.model");
+const { PublicPage } = require("../models/publicpage.model");
 
-const togglePublicPages = async(req, res) => {
-    const { user } = req;
+const populateOption = {
+    path: "publicPage",
+    select: "title date label isBookmark content"
+}
+
+const getPublicPage = async(req, res) => {
     const { pageId } = req.params;
-    const { type } = req.body;
-    try {
-        const page = await Page.findById(pageId);
-        const userAccount = await User.findById(user.userId);
 
-        if(!page || !userAccount) return res.status(404).json({
-            success: false,
-            message: "Page or User not found"
-        })
-        if(type === "ADD") {
-            userAccount.publicPages.push(savedPage._id)
-            await userAccount.save()
-        } else {
-            userAccount.publicPages.splice(userAccount.publicPages.indexOf(deletedPage._id), 1);
-            await userAccount.save();
-        }
+    try {
+        const sharedPage = await PublicPage.findOne({publicPage: pageId}).populate(populateOption)
         res.json({
             success: true,
-            message: "Added to public page."
+            sharedPage
         })
-    } 
+    }
     catch(err) {
         console.log(err);
         res.json({
             success: false,
-            message: `Error Ocuured: ${err}`
+            message: `Error Occured ${err}`
+        })
+    }
+}
+
+const sharePublic = async(req, res) => {
+    const { user } = req;
+    const { pageId } = req.params;
+    try {
+        const pageToShare = await Page.findById(pageId);
+        
+        const userId = user.userId.toString();
+        const creatorId = pageToShare.creator.toString();
+
+        if(userId === creatorId) {
+            const newPublic = new PublicPage({
+                sharedBy: userAccount._id,
+                publicPage: pageToShare._id,
+            })
+            const shared = await newPublic.save();
+            res.json({
+                success: true,
+                shared,
+                message: "Page Shared successfully"
+            })
+        } else {
+            res.json({
+                success: false,
+                message: "User is not authenticated or no page avaiable",
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.json({
+            success: false,
+            message: `Error Occured ${err}`
+        })
+    }
+}
+
+const deletePublicPage = async(req, res) => {
+    const { user } = req;
+    const { pageId } = req.params;
+    try {
+        const pageToShare = await Page.findById(pageId);
+        
+        const userId = user.userId.toString();
+        const creatorId = pageToShare.creator.toString();
+
+        if(userId === creatorId) {
+            const deletedPage = await PublicPage.findOneAndDelete({publicPage: pageId})
+            
+            res.json({
+                success: true,
+                deletedPage,
+                message: "Public page deleted successfully"
+            })
+        } else {
+            res.json({
+                success: false,
+                message: "User is not authenticated or no page avaiable",
+            })
+        }
+    }
+    catch(err) {
+        console.log(err);
+        res.json({
+            success: false,
+            message: `Error Occured ${err}`
         })
     }
 }
 
 module.exports = {
-    togglePublicPages
+    sharePublic,
+    getPublicPage,
+    deletePublicPage
 }

@@ -18,6 +18,10 @@ const getPages = async(req, res) => {
             message: "User not found"
         })
         pages = userAccount.pages
+        if(pages.length === 0) return res.json({
+            success: true,
+            message: "No page avaliable!"
+        })
         res.json({
             success: true,
             pages,
