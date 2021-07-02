@@ -16,7 +16,11 @@ const userSchema = new Schema({
         type: String,
         minLength: [8, "Password is too short"],
         required: "password is required"
-    }
+    },
+    pages: [{
+        type: Schema.Types.ObjectId,
+        ref: "Page"
+    }]
 })
 
 const User = mongoose.model("User", userSchema);
