@@ -8,7 +8,6 @@ app.use(express.json());
 const { dbConnection } = require("./db/db.connect");
 
 const userRoute = require("./routes/user.route");
-const userNoteRouter = require("./routes/userNote.route");
 const userPages = require("./routes/page.route");
 
 const errorHandler = require("./middleware/errorHandler");
@@ -18,7 +17,6 @@ dbConnection();
 
 app.use("/user", userRoute);
 app.use("/pages", userPages);
-app.use("/notes", userNoteRouter);
 
 app.get("/", (req, res) => {
     res.send("One Notion Live...")
