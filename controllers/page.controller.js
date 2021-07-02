@@ -44,6 +44,7 @@ const getPage = async(req, res) => {
         })
         const userId = user.userId.toString();
         const creatorId = page.creator.toString();
+        // get page
         if(userId === creatorId) {
             res.json({
                 success: true,
