@@ -7,6 +7,34 @@ const populateOption = {
     select: "title date label isBookmark content"
 }
 
+const getAllPublicPages = async(req, res) => {
+    const { user } = req;
+
+    try {
+        const userShared = await PublicPage.find({sharedBy: user.userId}).populate(populateOption)
+        
+
+        if(!userShared) return res.status(404).json({
+            success: false,
+            message: "User not found"
+        })
+        const sharedPages = userShared.map((page) => page.publicPage)
+    
+        res.json({
+            success: true,
+            sharedPages,
+            message: "Fetched all public pages successfully!"
+        })
+
+    } catch(err) {
+        console.log(err)
+        res.json({
+            success: false,
+            message: `Error Occured ${err}`
+        })
+    }
+}
+
 const getPublicPage = async(req, res) => {
     const { pageId } = req.params;
 
@@ -37,7 +65,7 @@ const sharePublic = async(req, res) => {
 
         if(userId === creatorId) {
             const newPublic = new PublicPage({
-                sharedBy: userAccount._id,
+                sharedBy: userId,
                 publicPage: pageToShare._id,
             })
             const shared = await newPublic.save();
@@ -96,6 +124,7 @@ const deletePublicPage = async(req, res) => {
 }
 
 module.exports = {
+    getAllPublicPages,
     sharePublic,
     getPublicPage,
     deletePublicPage
