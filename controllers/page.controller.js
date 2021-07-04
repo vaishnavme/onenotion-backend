@@ -20,6 +20,7 @@ const getPages = async(req, res) => {
         pages = userAccount.pages
         if(pages.length === 0) return res.json({
             success: true,
+            pages: [],
             message: "No page avaliable!"
         })
         res.json({
@@ -123,13 +124,13 @@ const updatePage = async(req, res) => {
         const creatorId = page.creator.toString();
 
         if(userId === creatorId) {
-            const updatePage = extend(page, {
+            const updated = extend(page, {
                 page, ...pageUpdates
             })
-            await updatePage.save();
+            await updated.save();
             res.json({
                 success: true,
-                updatePage,
+                updated,
                 message: "Page updated successfully"
             })
         } else {

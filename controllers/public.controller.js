@@ -13,7 +13,6 @@ const getAllPublicPages = async(req, res) => {
     try {
         const userShared = await PublicPage.find({sharedBy: user.userId}).populate(populateOption)
         
-
         if(!userShared) return res.status(404).json({
             success: false,
             message: "User not found"
@@ -69,9 +68,10 @@ const sharePublic = async(req, res) => {
                 publicPage: pageToShare._id,
             })
             const shared = await newPublic.save();
+            const sharedPage = await PublicPage.findOne({publicPage: pageId}).populate(populateOption)
             res.json({
                 success: true,
-                shared,
+                sharedPage,
                 message: "Page Shared successfully"
             })
         } else {
