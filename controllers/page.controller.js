@@ -1,5 +1,6 @@
 const { Page } = require("../models/page.model");
 const { User } = require("../models/user.model");
+const { PublicPage } = require("../models/publicpage.model");
 const { extend } = require("lodash");
 
 const populateOption = {
@@ -158,6 +159,7 @@ const deletePage = async(req, res) => {
     try {
         const page = await Page.findById(pageId);
         const userAccount = await User.findById(user.userId);
+        
         if(!page) return res.status(404).json({
             success: false,
             message: "No page found"
@@ -166,6 +168,7 @@ const deletePage = async(req, res) => {
         const creatorId = page.creator.toString();
 
         if(userId === creatorId) {
+            const deletedPublicPage = await PublicPage.findOneAndDelete({publicPage: pageId})
             const deletedPage = await Page.findByIdAndDelete(pageId);
             if(!userAccount) return res.status(404).json({
                 success: false,
