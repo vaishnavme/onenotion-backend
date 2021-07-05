@@ -39,10 +39,17 @@ const getPublicPage = async(req, res) => {
 
     try {
         const sharedPage = await PublicPage.findOne({publicPage: pageId}).populate(populateOption)
-        res.json({
-            success: true,
-            sharedPage
-        })
+        if(sharedPage) {
+            res.json({
+                success: true,
+                sharedPage
+            })
+        } else {
+            res.status(404).json({
+                success: false,
+                message: "Page has been deleted or no longer avaiable."
+            })
+        }
     }
     catch(err) {
         console.log(err);
