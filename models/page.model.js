@@ -9,16 +9,8 @@ const pageSchema = new Schema({
     date: { 
         type: String 
     },
-    label: { 
-        type: String, 
-        default: "General"
-    },
-    isBookmark: { 
-        type: Boolean 
-    },
     content: { 
-        type: String, 
-        default: "Write your thoughts..." 
+        type: Object
     },
     creator : {
         type: Schema.Types.ObjectId, ref: "User", required: true

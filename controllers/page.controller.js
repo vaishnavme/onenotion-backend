@@ -10,7 +10,6 @@ const populateOption = {
 
 const getPages = async(req, res) => {
     const { user } = req;
-
     try {
         const userAccount = await User.findById(user.userId).populate(populateOption)
 
@@ -79,13 +78,13 @@ const createPage = async(req, res) => {
     try {
         const { user } = req;
         const { page } = req.body;
-     
+
         const userAccount = await User.findById(user.userId)
-    
         const newPage = new Page({
             creator: user.userId,
-            title: page.title, date: page.date, label: page.label,
-            isBookmark: page.isBookmark, content: page.content
+            title: page.title, 
+            date: page.date,
+            content: page.content
         })
         const savedPage = await newPage.save();
 
@@ -123,11 +122,9 @@ const updatePage = async(req, res) => {
         })
         const userId = user.userId.toString();
         const creatorId = page.creator.toString();
-
+        
         if(userId === creatorId) {
-            const updated = extend(page, {
-                page, ...pageUpdates
-            })
+            const updated = extend(page, {page, ...pageUpdates})
             await updated.save();
             res.json({
                 success: true,
