@@ -38,7 +38,7 @@ const getPublicPage = async(req, res) => {
     const { pageId } = req.params;
 
     try {
-        const sharedPage = await PublicPage.findOne({publicPage: pageId}).populate(populateOption)
+        const sharedPage = await PublicPage.findOne({publicPage: pageId}).populate(populateOption).populate({path: "sharedBy", select: "name"})
         if(sharedPage) {
             res.json({
                 success: true,
@@ -75,6 +75,7 @@ const sharePublic = async(req, res) => {
                 publicPage: pageToShare._id,
             })
             const shared = await newPublic.save();
+
             const sharedPage = await PublicPage.findOne({publicPage: pageId}).populate(populateOption)
             res.json({
                 success: true,
