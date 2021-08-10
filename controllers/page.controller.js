@@ -169,13 +169,14 @@ const deletePage = async(req, res) => {
             const deletedPage = await Page.findByIdAndDelete(pageId);
             if(!userAccount) return res.status(404).json({
                 success: false,
-                message: "User not found"
+                message: "User not found",
             })
             userAccount.pages.splice(userAccount.pages.indexOf(deletedPage._id), 1);
             await userAccount.save();
         }
         res.json({
             success: true,
+            pageId: pageId,
             message: "Page successfully deleted!"
         })
     }

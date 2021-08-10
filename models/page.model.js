@@ -10,7 +10,7 @@ const pageSchema = new Schema({
         type: String 
     },
     content: { 
-        type: Object
+        type: String
     },
     creator : {
         type: Schema.Types.ObjectId, ref: "User", required: true
