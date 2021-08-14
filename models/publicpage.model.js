@@ -8,7 +8,8 @@ const publicSchema = new Schema({
     },
     publicPage: {
         type: Schema.Types.ObjectId,
-        ref: "Page"
+        ref: "Page",
+        unique: true
     }
 })
 
